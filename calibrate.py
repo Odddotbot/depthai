@@ -933,6 +933,7 @@ class Main:
 
                     self.images_captured += 1
                     self.images_captured_polygon += 1
+                    sync_trys = 0
                     capturing = False
                 else:
                     self.show_failed_capture_frame()
