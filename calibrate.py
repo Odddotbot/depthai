@@ -148,7 +148,7 @@ def parse_args():
                         help="Set antibanding/antiflicker algo for lights that flicker at mains frequency. Default: %(default)s [Hz]")
     parser.add_argument('-scp', '--saveCalibPath', type=str, default="",
                         help="Save calibration file to this path")
-    parser.add_argument('-dst', '--datasetPath', type=str, default="dataset",
+    parser.add_argument('-dst', '--datasetPath', type=str, default=f"dataset_{datetime.now().strftime('%d%m%Y%H%M%S')}",
                         help="Path to dataset used for processing images")
     parser.add_argument('-mdmp', '--minDetectedMarkersPercent', type=float, default=0.4,
                         help="Minimum percentage of detected markers to consider a frame valid")
@@ -904,6 +904,7 @@ class Main:
                         self.camera_queue[key].getAll()
                     sync_trys += 1
                     continue
+                sync_trys = 0
 
                 for name, frameMsg in syncedMsgs.items():
                     print(f"Time stamp of {name} is {frameMsg.getTimestamp()}")
@@ -933,7 +934,6 @@ class Main:
 
                     self.images_captured += 1
                     self.images_captured_polygon += 1
-                    sync_trys = 0
                     capturing = False
                 else:
                     self.show_failed_capture_frame()
@@ -1150,7 +1150,7 @@ class Main:
             if self.args.datasetPath:
                 print("Saving dataset to: {}".format(self.args.datasetPath))
                 self.dataset_path = self.args.datasetPath
-                if self.dataset_path != "dataset":
+                if not self.dataset_path.startswith("dataset"):
                     answer = input("This folders content will be deleted for sake of calibration: Proceed? (y/n)")
                     if answer == "y" or answer == "Y":
                         print("Starting calibration")
